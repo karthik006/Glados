@@ -16,39 +16,34 @@ class GameDetails extends Component {
             currentGameDetails: props.location.aboutProps.game,
         }
         this.id = props.match.params.id;
-        //this.urlString = "https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/games/";
-        
-        // this.getGameDetails(props.location.aboutProps.game).then(result => {
-        //     this.setState({
-        //         currentGameDetails: result
-        //     });
-        //     console.log(this.state.currentGameDetails);
-        // });
         const temp = props.location.aboutProps.game;
+        const genresList = ["", "", "Point-and-click", "", "Fighting", "Shooter", "", "Music",
+                            "Platform", "Puzzle", "Racing", "Real Time Strategy", "Role-playing", "Simulator",
+                            "Sport", "Strategy", "Turn-based strategy", "", "", "", "", "", "", "",
+                            "Tactical", "Hack and slash", "Quiz/Trivia", "", "", "", "Pinball", "Adventure",
+                            "Indie", "Arcade"]
 
         temp.genreList = [];
         if(temp.genres) {
-            temp.genres.forEach(async (id) => {
-                this.getGameGenre(id).then((result) => {
-                    temp.genreList.push(<Button key={ result.data[0].name } variant="primary" size="sm">{ result.data[0].name }</Button>);
-                });
+            temp.genres.forEach((id) => {
+                temp.genreList.push(<Button key={ id } variant="primary" size="sm">{ genresList[id] }</Button>);
             });
             this.setState({
                 currentGameDetails: temp
             });
         }
 
-        temp.screenList = [];
-        if(temp.screenshots) {
-            temp.screenshots.forEach(async (id) => {
-                this.getGameShots(id).then((result) => {
-                    temp.screenList.push(<Image key={ result.data[0].image_id } src={ "https:" + result.data[0].url} />);
-                });
-            });
-            this.setState({
-                currentGameDetails: temp
-            });
-        }
+        // var screenList = [];
+        // if(temp.screenshots) {
+        //     temp.screenshots.forEach(async (id) => {
+        //         this.getGameShots(id).then((result) => {
+        //             screenList.push(<Image key={ result.data[0].image_id } src={ "https:" + result.data[0].url.replace("t_thumb", "t_original")} />);
+        //         });
+        //     });
+        //     this.setState({
+        //         currentGameScreenshots: screenList
+        //     });
+        // }
 
         const { auth } = props;
         const UID = auth.uid;
@@ -75,41 +70,58 @@ class GameDetails extends Component {
                 }
             })
         })
+
+        this.getGameDetails(temp);
     }
 
-    async getGameGenre(id) {
-        var tempname = await this.client.fields('*').where('id = '+id).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/genres/');
-        console.log(tempname.data[0].name);
-        return tempname;
-    }
-
-    async getGameShots(id) {
-        var tempname = await this.client.fields('*').where('id = '+id).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/screenshots/');
-        console.log(tempname.data[0].url);
-        return tempname;
-    }
-
-    // async getGameDetails(temp) {
-    //     temp.genreList = [];
-    //     if(temp.genres) {
-    //         temp.genres.forEach(async (id) => {
-    //             var tempname = await this.client.fields('*').where('id = '+id).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/genres/');
-    //             console.log(tempname.data[0].name);
-    //             temp.genreList.push(<Button key={ tempname.data[0].name } variant="primary" size="sm">{ tempname.data[0].name }</Button>);
-    //         });
-    //     }
-
-    //     temp.screenList = [];
-    //     if(temp.screenshots) {
-    //         temp.screenshots.forEach(async (id) => {
-    //             var tempname = await this.client.fields('*').where('id = '+id).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/screenshots/');
-    //             console.log(tempname.data[0].url);
-    //             temp.screenList.push(<Image key={ tempname.data[0].image_id } src={ "https:" + tempname.data[0].url} />);
-    //         });
-    //     }
-
-    //     return temp;
+    // async getGameGenre(id) {
+    //     var tempname = await this.client.fields('*').where('id = '+id).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/genres/');
+    //     //console.log(tempname.data[0].name);
+    //     tempname.data[0].id = id;
+    //     return tempname;
     // }
+
+    // async getGameShots(id) {
+    //     var tempname = await this.client.fields('*').where('id = '+id).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/screenshots/');
+    //     console.log(tempname.data[0].url);
+    //     return tempname;
+    // }
+
+    async getGameDetails(temp) {
+        // temp.videoList = []
+        // if(temp.videos) {
+        //     var tempvid = await this.client.fields('*').where('id = '+temp.videos[0]).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/game_videos/');
+        //     console.log(tempvid.data[0]);
+        //     //t_original
+        //     temp.videoList.push(<iframe key={ tempvid.data[0].name } title={ tempvid.data[0].name } src={ "https://www.youtube.com/embed/" + tempvid.data[0].video_id }/>);
+        // }
+
+        temp.screenList = [];
+        if(temp.screenshots) {
+            for(var id of temp.screenshots) {
+                var tempname = await this.client.fields('*').where('id = '+id).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/screenshots/');
+                console.log(tempname.data[0]);
+                //t_original
+                temp.screenList.push(<Image key={ tempname.data[0].image_id } src={ "https:" + tempname.data[0].url.replace("t_thumb", "t_cover_big")} fluid/>);
+                if(temp.screenList.length === temp.screenshots.length || temp.screenList.length === 3) {
+                    // this.setState({
+                    //     currentGameDetails: temp
+                    // });
+                    if(temp.videos) {
+                        var tempvid = await this.client.fields('*').where('id = '+temp.videos[0]).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/game_videos/');
+                        console.log(tempvid.data[0]);
+                        //t_original
+                        temp.screenList.push(<iframe key={ tempvid.data[0].name } title={ tempvid.data[0].name } src={ "https://www.youtube.com/embed/" + tempvid.data[0].video_id }/>);
+                    }
+                    this.setState({
+                        currentGameDetails: temp
+                    });
+                    break;
+                }
+            }
+        }
+        console.log(this.state.currentGameDetails);
+    }
 
     render(){
         const { auth } = this.props;
@@ -130,7 +142,6 @@ class GameDetails extends Component {
                                 </Col>
                                 <Col sm={9} style={{textAlign:"start"}}>
                                     <Card.Title>{ this.state.currentGameDetails.first_release_date?new Date(this.state.currentGameDetails.first_release_date*1000).getFullYear():"NA" }</Card.Title>
-                                    <br />
                                     <Card.Text>{ this.state.currentGameDetails.storyline? this.state.currentGameDetails.storyline: this.state.currentGameDetails.summary}</Card.Text>
                                     <br />
                                     <Card.Text>
@@ -171,6 +182,16 @@ class GameDetails extends Component {
                         </Card.Body>
                     </Card>
                     <br/>
+                    {/* <Card bg="dark" text="white">
+                        <Card.Body>
+                            { this.state.currentGameDetails.screenList }
+                        </Card.Body>
+                    </Card> */}
+                    <Card bg="dark" text="white">
+                        <Card.Body>
+                            { this.state.currentGameDetails.screenList }
+                        </Card.Body>
+                    </Card>
                 </div>
             );
         }

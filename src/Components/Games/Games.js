@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import NavbarLinks from '../Navbar'
-import { Form, FormControl } from 'react-bootstrap'
+import { Form, FormControl, Button, InputGroup, FormGroup } from 'react-bootstrap'
 import Template from './ViewTemplate'
 //import $ from 'jquery'
 import igdb from 'igdb-api-node';
@@ -37,10 +37,13 @@ class Games extends Component {
     }
 
     handleChange = (e) => {
-        this.performSearch(e.target.value)
+        this.setState({
+            s: e.target.value
+        })
     }
 
     handleSubmit = (e) => {
+        this.performSearch(this.state.s)
         e.preventDefault();
       }
 
@@ -52,7 +55,12 @@ class Games extends Component {
             <div className="container">
                 <NavbarLinks />
                 <Form onSubmit={this.handleSubmit}>
-                    <FormControl type="text" placeholder="Search for a game" className="mr-sm-2" onChange={this.handleChange}/>
+                    <FormGroup>
+                        <FormControl type="text" placeholder="Search for a game" className="mr-sm-2" onChange={ this.handleChange }/>
+                        <InputGroup.Append>
+                            <Button type="submit" variant="primary">Search</Button>
+                        </InputGroup.Append>
+                    </FormGroup>
                 </Form>
                 <br/>
                 { this.state.rows }
