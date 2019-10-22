@@ -23,6 +23,37 @@ class GameDetails extends Component {
                             "Tactical", "Hack and slash", "Quiz/Trivia", "", "", "", "Pinball", "Adventure",
                             "Indie", "Arcade"]
 
+        const platformList = ["", "", "", "Linux", "Nintendo 64", "Wii", "PC (Microsoft Windows)", "PlayStation", 
+                              "PlayStation 2", "PlayStation 3", "", "Xbox", "Xbox 360", "PC DOS", "Mac", "Commodore C64/128", 
+                              "Amiga", "", "Nintendo Entertainment System (NES)", "Super Nintendo Entertainment System (SNES)", 
+                              "Nintendo DS", "Nintendo GameCube", "Game Boy Color", "Dreamcast", "Game Boy Advance", "Amstrad CPC", 
+                              "ZX Spectrum", "MSX", "", "Sega Mega Drive/Genesis", "Sega 32X", "", "Sega Saturn", "Game Boy", 
+                              "Android", "Sega Game Gear", "Xbox Live Arcade", "Nintendo 3DS", "PlayStation Portable", 
+                              "iOS", "", "Wii U", "N-Gage", "", "Tapwave Zodiac", "PlayStation Network", "PlayStation Vita", 
+                              "Virtual Console (Nintendo)", "PlayStation 4", "Xbox One", 
+                              "3DO Interactive Multiplayer", "Family Computer Disk System", "Arcade", "MSX2", "", 
+                              "Mobile", "WiiWare", "WonderSwan", "Super Famicom", "Atari 2600", "Atari 7800", "Atari Lynx", 
+                              "Atari Jaguar", "Atari ST/STE", "Sega Master System", "Atari 8-bit", "Atari 5200", "Intellivision", 
+                              "ColecoVision", "BBC Microcomputer System", "Vectrex", "Commodore VIC-20", "Ouya", "BlackBerry OS", 
+                              "Windows Phone", "Apple II", "", "Sharp X1", "Sega CD", "Neo Geo MVS", "Neo Geo AES", "", 
+                              "Web browser", "", "SG-1000", "Donner Model 30", "TurboGrafx-16/PC Engine", "Virtual Boy", 
+                              "Odyssey", "Microvision", "Commodore PET", "Bally Astrocade", "SteamOS", "Commodore 16", 
+                              "Commodore Plus/4", "PDP-1", "PDP-10", "PDP-8", "DEC GT40", "Family Computer (FAMICOM)", 
+                              "Analogue electronics", "Ferranti Nimrod Computer", "EDSAC", "PDP-7", "HP 2100", "HP 3000", 
+                              "SDS Sigma 7", "Call-A-Computer time-shared mainframe computer system", "PDP-11", "CDC Cyber 70", 
+                              "PLATO", "Imlac PDS-1", "Microcomputer", "OnLive Game System", "Amiga CD32", "Apple IIGS", 
+                              "Acorn Archimedes", "Philips CD-i", "FM Towns", "Neo Geo Pocket", "Neo Geo Pocket Color", 
+                              "Sharp X68000", "Nuon", "WonderSwan Color", "SwanCrystal", "PC-8801", "TRS-80", "Fairchild Channel F", 
+                              "PC Engine SuperGrafx", "Texas Instruments TI-99", "Nintendo Switch", "Nintendo PlayStation", 
+                              "Amazon Fire TV", "Philips Videopac G7000", "Acorn Electron", "Hyper Neo Geo 64", "Neo Geo CD", 
+                              "New Nintendo 3DS", "VC 4000", "1292 Advanced Programmable Video System", "AY-3-8500", 
+                              "AY-3-8610", "PC-50X Family", "AY-3-8760", "AY-3-8710", "AY-3-8603", "AY-3-8605", "AY-3-8606", 
+                              "AY-3-8607", "PC-98", "Turbografx-16/PC Engine CD", "TRS-80 Color Computer", "FM-7", 
+                              "Dragon 32/64", "Amstrad PCW", "Tatung Einstein", "Thomson MO5", "NEC PC-6000 Series", 
+                              "Commodore CDTV", "Nintendo DSi", "Nintendo eShop", "Windows Mixed Reality", "Oculus VR", 
+                              "SteamVR", "Daydream", "PlayStation VR", "Pokémon mini", "PlayStation 5", "", 
+                              "Xbox Project Scarlett", "Google Stadia"]
+
         temp.genreList = [];
         if(temp.genres) {
             temp.genres.forEach((id) => {
@@ -119,6 +150,28 @@ class GameDetails extends Component {
                     break;
                 }
             }
+
+            temp.company_name = [];
+            if(temp.involved_companies) {
+                for(var id1 of temp.involved_companies) {
+                    var tempname1 = await this.client.fields('*').where('id = '+id1).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/involved_companies/');
+                    //console.log(tempname.data[0]);
+                    if(tempname1.data[0].company) {
+                        var compname = await this.client.fields('*').where('id = '+tempname1.data[0].company).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/companies/');
+                        console.log(compname.data[0].name);
+                    }
+                }
+            }
+
+            temp.plat_names = []
+            if(temp.platforms) {
+                for(var id2 of temp.platforms) {
+                    var tempname2 = await this.client.fields('*').where('id = '+id2).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/platforms/');
+                    console.log(tempname2.data[0].name);
+                }
+            }
+
+            
         }
         console.log(this.state.currentGameDetails);
     }
