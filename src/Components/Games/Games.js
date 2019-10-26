@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import NavbarLinks from '../Navbar'
-import { Form, FormControl, Button, InputGroup, FormGroup } from 'react-bootstrap'
+import { Form, FormControl, Button, InputGroup } from 'react-bootstrap'
 import Template from './ViewTemplate'
 //import $ from 'jquery'
 import igdb from 'igdb-api-node';
@@ -55,12 +55,20 @@ class Games extends Component {
             <div className="container">
                 <NavbarLinks />
                 <Form onSubmit={this.handleSubmit}>
-                    <FormGroup>
-                        <FormControl type="text" placeholder="Search for a game" className="mr-sm-2" onChange={ this.handleChange }/>
+                    {/* <Form.Row>
+                        <Col>
+                            <FormControl type="text" placeholder="Search for a game" className="mr-sm-2" onChange={ this.handleChange }/>
+                        </Col>
+                        <Col>
+                            <Button type="submit" variant="primary">Search</Button>
+                        </Col>                        
+                    </Form.Row> */}
+                    <InputGroup className="mb-3">
+                        <FormControl placeholder="Search for a game" aria-label="Search" aria-describedby="basic-addon2" onChange={ this.handleChange }/>
                         <InputGroup.Append>
                             <Button type="submit" variant="primary">Search</Button>
                         </InputGroup.Append>
-                    </FormGroup>
+                    </InputGroup>
                 </Form>
                 <br/>
                 { this.state.rows }

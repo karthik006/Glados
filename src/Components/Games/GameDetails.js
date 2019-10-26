@@ -159,8 +159,12 @@ class GameDetails extends Component {
                     if(tempname1.data[0].company) {
                         var compname = await this.client.fields('*').where('id = '+tempname1.data[0].company).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/companies/');
                         console.log(compname.data[0].name);
+                        temp.company_name.push(<Button key={ compname.data[0].name } variant="primary" size="sm">{ compname.data[0].name }</Button>);
                     }
                 }
+                this.setState({
+                    currentGameDetails: temp
+                });
             }
 
             temp.plat_names = []
@@ -168,9 +172,39 @@ class GameDetails extends Component {
                 for(var id2 of temp.platforms) {
                     var tempname2 = await this.client.fields('*').where('id = '+id2).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/platforms/');
                     console.log(tempname2.data[0].name);
+                    temp.plat_names.push(<Button key={ tempname2.data[0].name } variant="primary" size="sm">{ tempname2.data[0].name }</Button>);
                 }
+                this.setState({
+                    currentGameDetails: temp
+                });
             }
 
+            temp.similar = []
+            if(temp.similar_games) {
+                for(var id3 of temp.similar_games) {
+                    var tempname3 = await this.client.fields("*").where('id = ' + id3).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/games/');
+                    console.log(tempname3);
+                    // if(tempname3.data[0].cover) {
+                    //     tempname3.data[0].img_path = await client.fields('*').where('id = '+tempname3.data[0].cover).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/covers/');
+                        
+                    // }
+                    temp.similar.push(<Button key={ tempname3.data[0].name } variant="primary" size="sm">{ tempname3.data[0].name }</Button>);
+                    if(temp.similar.length > 4) {
+                        this.setState({
+                            currentGameDetails: temp
+                        });
+                        break;
+                    }
+                }
+            }
+            
+            temp.web_list = [];
+            if(temp.websites) {
+                for(var id4 of temp.websites) {
+                    var tempname4 = await this.client.fields("*").where('id = ' + id4).request('https://cors-anywhere.herokuapp.com/https://api-v3.igdb.com/wesbites/');
+                    console.log(tempname4);
+                }
+            }
             
         }
         console.log(this.state.currentGameDetails);
@@ -185,7 +219,7 @@ class GameDetails extends Component {
                 <div className="container">
                     <NavbarLinks />
                     <br />
-                    <Card bg="dark" text="white">
+                    <Card id="1" bg="dark" text="white">
                         {/* <Card.Img src="holder.js/100px270" alt="Card image" /> */}
                         <Card.Body>
                             <Card.Header><h4>{ this.state.currentGameDetails.name }</h4></Card.Header>
@@ -223,6 +257,7 @@ class GameDetails extends Component {
                                             }
                                             <Button variant="outline-primary"><FontAwesomeIcon icon="heart" /></Button>
                                         </ButtonToolbar>
+                                        { this.state.currentGameDetails.total_rating }
                                     </Card.Text>
                                     <br />
                                     <Card.Text>
@@ -235,14 +270,24 @@ class GameDetails extends Component {
                         </Card.Body>
                     </Card>
                     <br/>
-                    {/* <Card bg="dark" text="white">
-                        <Card.Body>
-                            { this.state.currentGameDetails.screenList }
-                        </Card.Body>
-                    </Card> */}
                     <Card bg="dark" text="white">
                         <Card.Body>
                             { this.state.currentGameDetails.screenList }
+                        </Card.Body>
+                    </Card>
+                    <Card id="3" bg="dark" text="white">
+                        <Card.Body>
+                            <Card.Text>
+                                <ButtonGroup>
+                                    { this.state.currentGameDetails.company_name }
+                                </ButtonGroup>
+                                <ButtonGroup>
+                                    { this.state.currentGameDetails.plat_names }
+                                </ButtonGroup>
+                                <ButtonGroup>
+                                    { this.state.currentGameDetails.similar }
+                                </ButtonGroup>
+                            </Card.Text>
                         </Card.Body>
                     </Card>
                 </div>
