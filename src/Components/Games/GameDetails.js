@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import NavbarLinks from '../Navbar'
-import { Card, Row, Col, Image, Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap'
+import { Card, Row, Col, Image, Button, ButtonGroup, ButtonToolbar, Modal } from 'react-bootstrap'
 import firebase from '../../Config/fbConfig'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import $ from 'jquery'
@@ -14,6 +14,7 @@ class GameDetails extends Component {
         this.state = {
             seen: false,
             watchlist: false,
+            show: false
         }
         const guid = props.match.params.id;
         //const temp = props.location.aboutProps.game;
@@ -145,11 +146,11 @@ class GameDetails extends Component {
         })
 
         const { auth } = props;
-        const UID = auth.uid;
+        this.UID = auth.uid;
 
-        firebase.firestore().collection(UID).doc("Movies").collection("Watchlist").get().then((snapshot) => {
+        firebase.firestore().collection(this.UID).doc("Movies").collection("Watchlist").get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
-                if(doc.key === this.state.curMovie.id)
+                if(doc.key === guid)
                 {
                     this.setState({
                         watchlist: true
@@ -158,9 +159,9 @@ class GameDetails extends Component {
             })
         })
 
-        firebase.firestore().collection(UID).doc("Movies").collection("Seen").get().then((snapshot) => {
+        firebase.firestore().collection(this.UID).doc("Games").collection("Playlist").get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
-                if(doc.key === this.state.curMovie.id)
+                if(doc.id === guid)
                 {
                     this.setState({
                         seen: true,
@@ -169,8 +170,28 @@ class GameDetails extends Component {
                 }
             })
         })
-
         //this.getGameDetails(temp);
+    }
+
+    addList = (e) => {
+        console.log(this.UID);
+        firebase.firestore().collection(this.UID).doc("Games").collection("Playlist").doc(this.state.currentGameDetails.guid).set({
+            "ID": this.state.currentGameDetails.guid,
+            "Name": this.state.currentGameDetails.name,
+            "Image": this.state.currentGameDetails.image.thumb_url,
+            "Release": this.state.currentGameDetails.expected_release_year
+        });
+        this.setState({
+            show: true
+        });
+        // e.target.disabled = true;
+        // e.target.variant = "success";
+    }
+
+    handleClose = (e) => {
+        this.setState({
+            show: false
+        });
     }
 
     // async getGameGenre(id) {
@@ -301,7 +322,7 @@ class GameDetails extends Component {
                                                 <Button variant="success" style={{ marginRight: '1rem' }} disabled>
                                                     <FontAwesomeIcon icon="list" />
                                                 </Button> :
-                                                <Button variant="outline-primary" style={{ marginRight: '1rem' }}>
+                                                <Button variant="outline-primary" style={{ marginRight: '1rem' }} onClick={ this.addList }>
                                                     <FontAwesomeIcon icon="list" />
                                                 </Button>
                                             }
@@ -320,6 +341,17 @@ class GameDetails extends Component {
                                             }
                                             <Button variant="outline-primary"><FontAwesomeIcon icon="heart" /></Button>
                                         </ButtonToolbar>
+                                        <Modal show={this.state.show} onHide={this.handleClose}>
+                                            <Modal.Header closeButton>
+                                                <Modal.Title>{ this.state.currentGameDetails.name }</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body>Added to playlist.</Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="primary" onClick={this.handleClose}>
+                                                    Cool!
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
                                     </Card.Text>
                                     <br />
                                     <Card.Text>
