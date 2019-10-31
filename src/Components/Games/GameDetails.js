@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import NavbarLinks from '../Navbar'
-import { Card, Row, Col, Image, Button, ButtonGroup, ButtonToolbar, Modal } from 'react-bootstrap'
+import { Card, Row, Col, Image, Button, ButtonGroup, ButtonToolbar, Modal, Spinner } from 'react-bootstrap'
 import firebase from '../../Config/fbConfig'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import $ from 'jquery'
@@ -148,44 +148,68 @@ class GameDetails extends Component {
         const { auth } = props;
         this.UID = auth.uid;
 
-        firebase.firestore().collection(this.UID).doc("Movies").collection("Watchlist").get().then((snapshot) => {
-            snapshot.docs.forEach(doc => {
-                if(doc.key === guid)
-                {
-                    this.setState({
-                        watchlist: true
-                    })
-                }
-            })
-        })
+        // firebase.firestore().collection(this.UID).doc("Games").collection("Playlist").get().then((snapshot) => {
+        //     snapshot.docs.forEach(doc => {
+        //         if(doc.id === guid)
+        //         {
+        //             this.setState({
+        //                 watchlist: true
+        //             })
+        //         }
+        //     })
+        // })
 
         firebase.firestore().collection(this.UID).doc("Games").collection("Playlist").get().then((snapshot) => {
             snapshot.docs.forEach(doc => {
                 if(doc.id === guid)
                 {
-                    this.setState({
-                        seen: true,
-                        watchlist: false
-                    })
+                    if(doc._document.proto.fields.Played.stringValue === "Yes") {
+                        this.setState({
+                            seen: true,
+                            watchlist: false
+                        })
+                    }
+                    else {
+                        this.setState({
+                            watchlist: true
+                        })
+                    }
                 }
+                //doc._document.proto.fields.ID
+                //console.log(doc._document.proto.fields.ID.stringValue);
             })
         })
         //this.getGameDetails(temp);
     }
 
     addList = (e) => {
-        console.log(this.UID);
         firebase.firestore().collection(this.UID).doc("Games").collection("Playlist").doc(this.state.currentGameDetails.guid).set({
             "ID": this.state.currentGameDetails.guid,
             "Name": this.state.currentGameDetails.name,
             "Image": this.state.currentGameDetails.image.thumb_url,
-            "Release": this.state.currentGameDetails.expected_release_year
+            "Release": this.state.currentGameDetails.expected_release_year,
+            "Played": "Yes"
         });
         this.setState({
-            show: true
+            show: true,
+            msg: "Added to playlist."
         });
         // e.target.disabled = true;
         // e.target.variant = "success";
+    }
+
+    addMark = (e) => {
+        firebase.firestore().collection(this.UID).doc("Games").collection("Playlist").doc(this.state.currentGameDetails.guid).set({
+            "ID": this.state.currentGameDetails.guid,
+            "Name": this.state.currentGameDetails.name,
+            "Image": this.state.currentGameDetails.image.thumb_url,
+            "Release": this.state.currentGameDetails.expected_release_year,
+            "Played": "No"
+        });
+        this.setState({
+            show: true,
+            msg: "Bookmarked and added to wishlist."
+        });
     }
 
     handleClose = (e) => {
@@ -319,7 +343,7 @@ class GameDetails extends Component {
                                         <ButtonToolbar>
                                             { 
                                                 this.state.seen ? 
-                                                <Button variant="success" style={{ marginRight: '1rem' }} disabled>
+                                                <Button variant="primary" style={{ marginRight: '1rem' }} disabled>
                                                     <FontAwesomeIcon icon="list" />
                                                 </Button> :
                                                 <Button variant="outline-primary" style={{ marginRight: '1rem' }} onClick={ this.addList }>
@@ -328,14 +352,14 @@ class GameDetails extends Component {
                                             }
                                             {
                                                 this.state.watchlist ?
-                                                <Button variant="success" style={{ marginRight: '1rem' }} disabled>
+                                                <Button variant="primary" style={{ marginRight: '1rem' }} disabled>
                                                     <FontAwesomeIcon icon="bookmark" />
                                                 </Button> :
                                                 this.state.seen ?
                                                 <Button variant="outline-primary" style={{ marginRight: '1rem' }} disabled>
                                                     <FontAwesomeIcon icon="bookmark" />
                                                 </Button> :
-                                                <Button variant="outline-primary" style={{ marginRight: '1rem' }}>
+                                                <Button variant="outline-primary" style={{ marginRight: '1rem' }} onClick={ this.addMark }>
                                                     <FontAwesomeIcon icon="bookmark" />
                                                 </Button>
                                             }
@@ -345,7 +369,7 @@ class GameDetails extends Component {
                                             <Modal.Header closeButton>
                                                 <Modal.Title>{ this.state.currentGameDetails.name }</Modal.Title>
                                             </Modal.Header>
-                                            <Modal.Body>Added to playlist.</Modal.Body>
+                                            <Modal.Body>{ this.state.msg }</Modal.Body>
                                             <Modal.Footer>
                                                 <Button variant="primary" onClick={this.handleClose}>
                                                     Cool!
@@ -393,9 +417,11 @@ class GameDetails extends Component {
                     <Card bg="dark" text="white">
                         <Card.Body>
                             <Card.Text>
+                                { this.state.currentGameDetails.description? 
                                 <div dangerouslySetInnerHTML={{ __html: this.state.currentGameDetails.description
                                     .replace(/<a\b[^>]*>/gi,"").replace(/<\/a>/gi, "")
-                                    .replace(/<figure.*?>.*?<\/figure>/ig, "") }} />
+                                    .replace(/<figure.*?>.*?<\/figure>/ig, "") }} /> :
+                                "YEET TO BE RELEASED" }
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -406,7 +432,10 @@ class GameDetails extends Component {
         {
             return (
                 <div className="container center">
-                    <p>Loading...</p>
+                    {/* <p>Loading...</p> */}
+                    <center>
+                        <Spinner animation="grow" variant="danger" />
+                    </center>
                 </div>
             )
         }

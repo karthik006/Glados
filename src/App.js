@@ -4,6 +4,7 @@ import SigninPage from './Components/Signin'
 import SignUp from './Components/Signup'
 import Home from './Components/Home'
 import Games from './Components/Games/Games'
+import Playlist from './Components/Games/Playlist'
 import GameDetails from './Components/Games/GameDetails'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBookmark, faHeart, faList } from '@fortawesome/free-solid-svg-icons'
@@ -19,6 +20,7 @@ class App extends Component {
             <Route path='/signup' component={SignUp} />
             <Route exact path='/Game' component={Games} />
             <Route path='/Game/:id' component={GameDetails} />
+            <Route exact path='/Playlist' component={Playlist} />
           </Switch>
         </div>
       </BrowserRouter>

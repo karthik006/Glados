@@ -17,8 +17,7 @@ class NavbarLinks extends Component {
               </Nav.Item>
               <NavDropdown title="Games" id="dropdown-item-button">
                 <NavDropdown.Item><NavLink to='/Game'>Search</NavLink></NavDropdown.Item>
-                <NavDropdown.Item>Watchlist</NavDropdown.Item>
-                <NavDropdown.Item>Upcoming</NavDropdown.Item>
+                <NavDropdown.Item><NavLink to='/Playlist'>Playlist</NavLink></NavDropdown.Item>
                 <NavDropdown.Item>Recommended</NavDropdown.Item>
               </NavDropdown>
               <Nav.Item>
