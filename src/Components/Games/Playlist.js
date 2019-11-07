@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import NavbarLinks from '../Navbar'
 import firebase from '../../Config/fbConfig'
-import { Button, Tabs, Tab, Spinner } from 'react-bootstrap'
+import { Tabs, Tab, Spinner } from 'react-bootstrap'
 import Template from './ViewTemplate'
-import $ from 'jquery'
 
 class Playlist extends Component {
     constructor(props) {

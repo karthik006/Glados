@@ -8,12 +8,12 @@ class NavbarLinks extends Component {
   render() {
     return (
         <Navbar bg="dark" expand="md" variant="dark">
-          <Navbar.Brand>Glados</Navbar.Brand>
+          <Navbar.Brand><NavLink to='/Home' className="link">Glados</NavLink></Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ml-auto">
               <Nav.Item>
-                <Nav.Link><NavLink to='/Home' className="link">About</NavLink></Nav.Link>
+                <Nav.Link><NavLink to='/About' className="link">About</NavLink></Nav.Link>
               </Nav.Item>
               <NavDropdown title="Games" id="dropdown-item-button">
                 <NavDropdown.Item><NavLink to='/Game'>Search</NavLink></NavDropdown.Item>
@@ -21,10 +21,7 @@ class NavbarLinks extends Component {
                 <NavDropdown.Item>Recommended</NavDropdown.Item>
               </NavDropdown>
               <Nav.Item>
-              <Nav.Link><NavLink to='/Profile' className="link">Profile</NavLink></Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-              <Nav.Link><a onClick={this.props.signOut} className="btn btn-floating red lighten-1">K</a></Nav.Link>
+                <Nav.Link><NavLink to='/' onClick={this.props.signOut}>Logout</NavLink></Nav.Link>
               </Nav.Item>
             </Nav>
           </Navbar.Collapse>

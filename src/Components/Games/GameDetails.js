@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import NavbarLinks from '../Navbar'
-import { Card, Row, Col, Image, Button, ButtonGroup, ButtonToolbar, Modal, Spinner } from 'react-bootstrap'
+import { Card, Row, Col, Image, Button, ButtonGroup, ButtonToolbar, Modal, Spinner, Carousel } from 'react-bootstrap'
 import firebase from '../../Config/fbConfig'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import $ from 'jquery'
@@ -134,6 +134,20 @@ class GameDetails extends Component {
                         //     }
                         // })
                     })
+                }
+
+                gameDetails.screen = []
+                if(gameDetails.images) {
+                    for(var i of gameDetails.images) {
+                        gameDetails.screen.push(
+                            <Carousel.Item style={{textAlign: "center"}}>
+                                <img className="img-fluid" src={ i.super_url?i.super_url:null } alt="Screenshot" rounded/>
+                            </Carousel.Item>
+                        );
+                        if(gameDetails.screen.length > 10) {
+                            break;
+                        } 
+                    }
                 }
 
                 this.setState({
@@ -410,6 +424,16 @@ class GameDetails extends Component {
                                     { this.state.currentGameDetails.similarList }
                                 </ul>
                             </Card.Text>
+                        </Card.Body>
+                    </Card>
+                    <br />
+
+                    <Card id="4" bg="dark" text="white">
+                        <Card.Body>
+                        <b>Screenshots: </b>
+                            <Carousel>
+                                { this.state.currentGameDetails.screen }
+                            </Carousel>
                         </Card.Body>
                     </Card>
                     <br />

@@ -5,6 +5,7 @@ import { signIn } from '../store/authActions'
 import { Redirect } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner'
 import { Form, Row, Col, Button, Alert } from 'react-bootstrap'
+import './Sign.css'
 
 class SigninPage extends Component {
   state = {
@@ -35,7 +36,7 @@ class SigninPage extends Component {
     const { auth } = this.props;
     if(auth.uid) return <Redirect to= '/Home'/>;
     return (
-        <div className="App">
+        <div class="Signin">
           <Form>
             <Form.Group controlId="email">
               <Form.Label>Email address</Form.Label>

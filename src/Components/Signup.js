@@ -68,7 +68,7 @@ class SignUp extends Component {
     const { auth } = this.props;
     if(auth.uid) return <Redirect to= '/home'/>;
     return (
-      <div className="App">
+      <div class="Signin">
         <Form>
           <Form.Group controlId="username">
             <Form.Label>Username</Form.Label>

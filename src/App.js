@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import SigninPage from './Components/Signin'
 import SignUp from './Components/Signup'
 import Home from './Components/Home'
+import About from './Components/About'
 import Games from './Components/Games/Games'
 import Playlist from './Components/Games/Playlist'
 import GameDetails from './Components/Games/GameDetails'
@@ -17,6 +18,7 @@ class App extends Component {
           <Switch>
             <Route exact path='/'component={SigninPage} />
             <Route path='/Home' component={Home} />
+            <Route path='/About' component={About} />
             <Route path='/signup' component={SignUp} />
             <Route exact path='/Game' component={Games} />
             <Route path='/Game/:id' component={GameDetails} />
